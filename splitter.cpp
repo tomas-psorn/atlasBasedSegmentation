@@ -15,8 +15,8 @@ int main( int argc, char ** argv )
         return EXIT_FAILURE;
     }
 
-    typedef float        InputPixelType;
-    typedef float        OutputPixelType;
+    typedef unsigned int        InputPixelType;
+    typedef unsigned int       OutputPixelType;
 
     typedef itk::Image< InputPixelType,  3 >    InputImageType;
     typedef itk::Image< OutputPixelType, 2 >    OutputImageType;
