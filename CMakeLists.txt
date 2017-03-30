@@ -10,7 +10,7 @@ find_package(ITK REQUIRED)
 include(${ITK_USE_FILE} atlasBasedSegmentation.h)
 
 
-add_executable(atlasBasedSegmentation atlasBasedSegmentation.cpp affine2D.cpp)
+add_executable(atlasBasedSegmentation atlasBasedSegmentation.cpp affine2D.cpp labelInverseTransform.cpp)
 add_executable(splitter splitter.cpp)
 
 
