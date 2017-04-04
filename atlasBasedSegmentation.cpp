@@ -10,7 +10,7 @@ int main (int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    
+
     TransformType::Pointer transform = TransformType::New();
 
     affine2D(argv[1], argv[2], transform);
