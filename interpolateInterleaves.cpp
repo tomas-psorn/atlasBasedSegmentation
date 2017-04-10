@@ -13,16 +13,6 @@ int main(int argc, char * argv[]){
         return EXIT_FAILURE;
     }
 
-    const     unsigned int    Dimension = 3;
-
-    typedef   unsigned short  InputPixelType;
-    typedef   float           InternalPixelType;
-
-    typedef itk::Image< InputPixelType,    Dimension >   InputImageType;
-    typedef itk::Image< InternalPixelType, Dimension >   InternalImageType;
-
-    typedef itk::ImageFileReader< InputImageType  >  ReaderType;
-
     ReaderType::Pointer reader = ReaderType::New();
 
     reader->SetFileName( argv[1] );
@@ -37,24 +27,12 @@ int main(int argc, char * argv[]){
         std::cerr << excep << std::endl;
     }
 
-    typedef itk::IntensityWindowingImageFilter<
-            InputImageType,
-            InternalImageType >  IntensityFilterType;
-
     IntensityFilterType::Pointer intensityWindowing = IntensityFilterType::New();
 
     intensityWindowing->SetOutputMinimum(   0.0 );
     intensityWindowing->SetOutputMaximum( 255.0 ); // floats but in the range of chars.
 
     intensityWindowing->SetInput( reader->GetOutput() );
-
-    typedef itk::RecursiveGaussianImageFilter<
-            InternalImageType,
-            InternalImageType > GaussianFilterType;
-
-    typedef itk::GradientAnisotropicDiffusionImageFilter<
-            InternalImageType,
-            InternalImageType > AnisoFilterType;
 
     AnisoFilterType::Pointer anisoSmoother = AnisoFilterType::New();
 
@@ -65,8 +43,6 @@ int main(int argc, char * argv[]){
     anisoSmoother->SetNumberOfIterations(5);
     anisoSmoother->SetTimeStep(0.00485938);
     anisoSmoother->SetConductanceParameter(0.5);
-
-
 
     smootherX->SetInput( intensityWindowing->GetOutput() );
     smootherY->SetInput( smootherX->GetOutput() );
@@ -83,24 +59,12 @@ int main(int argc, char * argv[]){
     smootherX->SetDirection( 0 );
     smootherY->SetDirection( 1 );
 
-    typedef   unsigned char   OutputPixelType;
-
-    typedef itk::Image< OutputPixelType,   Dimension >   OutputImageType;
-
-    typedef itk::ResampleImageFilter<
-            InternalImageType, OutputImageType >  ResampleFilterType;
-
     ResampleFilterType::Pointer resampler = ResampleFilterType::New();
-
-    typedef itk::IdentityTransform< double, Dimension >  TransformType;
 
     TransformType::Pointer transform = TransformType::New();
     transform->SetIdentity();
 
     resampler->SetTransform( transform );
-
-    typedef itk::BSplineInterpolateImageFunction<
-            InternalImageType, double >  InterpolatorType;
 
     InterpolatorType::Pointer interpolator = InterpolatorType::New();
 
@@ -140,8 +104,6 @@ int main(int argc, char * argv[]){
     resampler->SetInput( anisoSmoother->GetOutput() );
 //    resampler->SetInput( smootherY->GetOutput() );
     resampler->Update();
-
-    typedef itk::ImageFileWriter< OutputImageType >  WriterType;
 
     WriterType::Pointer writer = WriterType::New();
 
