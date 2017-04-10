@@ -30,7 +30,7 @@ const int dimension = 3;
 
 // read images for registration
 
-typedef unsigned int InputPixelType;
+typedef unsigned short InputPixelType;
 typedef double DoublePixelType;
 
 typedef itk::Image< InputPixelType, dimension> IntImageType;

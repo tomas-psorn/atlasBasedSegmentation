@@ -87,10 +87,9 @@ int main (int argc, char *argv[])
     anisoSmoother->SetInput(fixedImage);
     resampler->SetInput( anisoSmoother->GetOutput() );
     resampler->Update();
-    //fixedImage= resampler->GetOutput();
-    doubleToIntCaster -> SetInput(resampler->GetOutput());
-    doubleToIntCaster -> Update();
-    IntImageType::Pointer intFixed = doubleToIntCaster -> GetOutput();
+    fixedImage= resampler->GetOutput();
+
+
 
     //
     // now the same for moving image
@@ -123,33 +122,31 @@ int main (int argc, char *argv[])
     anisoSmoother->SetInput(movingImage);
     resampler->SetInput( anisoSmoother->GetOutput() );
     resampler->Update();
-    //movingImage = resampler->GetOutput();
-    doubleToIntCaster -> SetInput(resampler->GetOutput());
-    doubleToIntCaster -> Update();
-    IntImageType::Pointer intMoving = doubleToIntCaster -> GetOutput();
+    movingImage = resampler->GetOutput();
+
+
     //
     // verbose
     //
     std::string logDir(argv[3]);
-
     std::string fixedIsotropicPath = logDir + "fixedIsotropic.dcm";
     doubleToIntCaster->SetInput(fixedImage);
     doubleToIntCaster->Update();
     writer->SetFileName(fixedIsotropicPath.c_str());
-    writer->SetInput(intFixed);
+
+    writer->SetInput(doubleToIntCaster -> GetOutput());
     if(verbose) std::cout<< "Writing isotropic fixed image to: " << fixedIsotropicPath << std::endl;
     writer->Update();
-    if(verbose) std::cout<< "Done " << fixedIsotropicPath << std::endl;
+    if(verbose) std::cout<< "Done " << std::endl;
 
     std::string movingIsotropicPath = logDir + "movingIsotropic.dcm";
     doubleToIntCaster->SetInput(movingImage);
     doubleToIntCaster->Update();
     writer->SetFileName(movingIsotropicPath.c_str());
-    writer->SetInput(intMoving);
+    writer->SetInput(doubleToIntCaster -> GetOutput());
     if(verbose) std::cout<< "Writing isotropic moving image to: " << movingIsotropicPath << std::endl;
     writer->Update();
-    if(verbose) std::cout<< "Done " << fixedIsotropicPath << std::endl;
-
+    if(verbose) std::cout<< "Done " << std::endl;
 
     return EXIT_SUCCESS;
 }
