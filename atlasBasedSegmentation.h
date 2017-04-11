@@ -48,7 +48,7 @@ const float anisoDiffusionConductance = 0.5;
 typedef itk::GradientAnisotropicDiffusionImageFilter<DoubleImageType, DoubleImageType > AnisoFilterType;
 typedef itk::ResampleImageFilter <DoubleImageType, DoubleImageType> ResampleFilterType;
 typedef itk::AffineTransform<double, dimension> TransformType;
-typedef itk::LinearInterpolateImageFunction< DoubleImageType,double> InterpolatorType;
+typedef itk::BSplineInterpolateImageFunction< DoubleImageType,double> InterpolatorType;
 typedef DoubleImageType::SizeType::SizeValueType SizeValueType;
 
 

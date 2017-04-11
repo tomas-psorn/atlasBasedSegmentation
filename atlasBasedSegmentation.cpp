@@ -57,6 +57,8 @@ int main (int argc, char *argv[])
     double isoSpacing;
     double dx, dy, dz;
 
+    interpolator -> SetSplineOrder(3);
+
     //
     //  resample fixed image
     //
