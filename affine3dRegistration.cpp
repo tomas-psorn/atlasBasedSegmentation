@@ -8,13 +8,14 @@ itk sw guide p. 516
 
 int main( int argc, char *argv[] )
 {
-    if( argc < 4 )
+    if( argc < 6 )
     {
         std::cerr << "Missing Parameters " << std::endl;
         std::cerr << "Usage: " << argv[0];
-        std::cerr << "   fixedImageFile  movingImageFile " << std::endl;
-        std::cerr << "   outputImagefile  [differenceBeforeRegistration] " << std::endl;
-        std::cerr << "   [differenceAfterRegistration] " << std::endl;
+        std::cerr << "   fixedImageFile  fixedImageMask " << std::endl;
+        std::cerr << "   movingImageFile  movingImageMask " << std::endl;
+        std::cerr << "   outputImagefile" << std::endl;
+        std::cerr << "   [differenceBeforeRegistration] [differenceAfterRegistration] " << std::endl;
         std::cerr << "   [stepLength] [maxNumberOfIterations] "<< std::endl;
         return EXIT_FAILURE;
     }
@@ -24,6 +25,26 @@ int main( int argc, char *argv[] )
     InterpolatorType::Pointer   interpolator  = InterpolatorType::New();
     RegistrationType::Pointer   registration  = RegistrationType::New();
 
+
+    ImageReaderType::Pointer  fixedImageReader  = ImageReaderType::New();
+    MaskReaderType::Pointer fixedMaskReader = MaskReaderType::New();
+    ImageReaderType::Pointer  movingImageReader  = ImageReaderType::New();
+    MaskReaderType::Pointer movingMaskReader = MaskReaderType::New();
+
+    fixedImageReader->SetFileName(  argv[1] );
+    fixedMaskReader->SetFileName(  argv[2] );
+    movingImageReader->SetFileName(  argv[3] );
+    movingMaskReader->SetFileName( argv[4] );
+
+    MaskType::Pointer fixedMask = MaskType::New();
+    MaskType::Pointer movingMask = MaskType::New();
+
+    fixedMask->SetImage( fixedMaskReader->GetOutput() );
+    movingMask->SetImage( movingMaskReader->GetOutput() );
+
+    metric->SetFixedImageMask(fixedMask);
+//    metric->SetMovingImageMask(movingMask);
+
     registration->SetMetric(        metric        );
     registration->SetOptimizer(     optimizer     );
     registration->SetInterpolator(  interpolator  );
@@ -32,10 +53,8 @@ int main( int argc, char *argv[] )
     TransformType::Pointer  transform = TransformType::New();
     registration->SetTransform( transform );
 
-    FixedImageReaderType::Pointer  fixedImageReader  = FixedImageReaderType::New();
-    MovingImageReaderType::Pointer movingImageReader = MovingImageReaderType::New();
-    fixedImageReader->SetFileName(  argv[1] );
-    movingImageReader->SetFileName( argv[2] );
+
+
 
 
     registration->SetFixedImage(    fixedImageReader->GetOutput()    );
@@ -54,9 +73,9 @@ int main( int argc, char *argv[] )
     registration->SetInitialTransformParameters(transform->GetParameters() );
 
     double translationScale = 1.0 / 1000.0;
-    if( argc > 8 )
+    if( argc > 10 )
     {
-        translationScale = atof( argv[8] );
+        translationScale = atof( argv[10] );
     }
 
     OptimizerScalesType optimizerScales( transform->GetNumberOfParameters() );
@@ -77,18 +96,21 @@ int main( int argc, char *argv[] )
     double steplength = 0.1;
     if( argc > 6 )
     {
-        steplength = atof( argv[6] );
+        steplength = atof( argv[8] );
     }
     unsigned int maxNumberOfIterations = 300;
     if( argc > 7 )
     {
-        maxNumberOfIterations = atoi( argv[7] );
+        maxNumberOfIterations = atoi( argv[9] );
     }
 
     optimizer->SetMaximumStepLength( steplength );
     optimizer->SetMinimumStepLength( 0.0001 );
     optimizer->SetNumberOfIterations( maxNumberOfIterations );
     optimizer->MinimizeOn();
+
+    std::cout << "Got here " << std::endl;
+
 
     try
     {
@@ -136,7 +158,7 @@ int main( int argc, char *argv[] )
     CastFilterType::Pointer  caster =  CastFilterType::New();
 
 
-    writer->SetFileName( argv[3] );
+    writer->SetFileName( argv[5] );
 
 
     caster->SetInput( resampler->GetOutput() );
@@ -171,9 +193,9 @@ int main( int argc, char *argv[] )
 
     // Compute the difference image between the
     // fixed and resampled moving image.
-    if( argc > 5 )
+    if( argc > 7 )
     {
-        writer2->SetFileName( argv[5] );
+        writer2->SetFileName( argv[7] );
         writer2->Update();
     }
 
@@ -183,10 +205,10 @@ int main( int argc, char *argv[] )
 
     // Compute the difference image between the
     // fixed and moving image before registration.
-    if( argc > 4 )
+    if( argc > 6 )
     {
         resampler->SetTransform( identity );
-        writer2->SetFileName( argv[4] );
+        writer2->SetFileName( argv[6] );
         writer2->Update();
     }
 

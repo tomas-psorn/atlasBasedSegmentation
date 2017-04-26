@@ -18,21 +18,28 @@ itk sw guide p. 516
 #include "itkSubtractImageFilter.h"
 #include "itkRescaleIntensityImageFilter.h"
 
+#include "itkImageMaskSpatialObject.h"
+
 const    unsigned int    Dimension = 3;
-typedef  float           PixelType;
+typedef  unsigned int           PixelType;
+typedef  unsigned char           MaskPixelType;
+
+typedef itk::ImageMaskSpatialObject< Dimension > MaskType;
 
 typedef itk::Image< PixelType, Dimension >  FixedImageType;
 typedef itk::Image< PixelType, Dimension >  MovingImageType;
+typedef itk::Image< MaskPixelType, Dimension >  MaskImageType;
 
-typedef itk::AffineTransform<double, Dimension> TransformType;
+
+typedef itk::ScalableAffineTransform<double, Dimension> TransformType;
 
 typedef itk::RegularStepGradientDescentOptimizer OptimizerType;
 typedef itk::MeanSquaresImageToImageMetric<FixedImageType, MovingImageType > MetricType;
 typedef itk::LinearInterpolateImageFunction< MovingImageType,double>    InterpolatorType;
 typedef itk::ImageRegistrationMethod<FixedImageType, MovingImageType> RegistrationType;
 
-typedef itk::ImageFileReader< FixedImageType  > FixedImageReaderType;
-typedef itk::ImageFileReader< MovingImageType > MovingImageReaderType;
+typedef itk::ImageFileReader< FixedImageType  > ImageReaderType;
+typedef itk::ImageFileReader< MaskImageType  > MaskReaderType;
 
 typedef itk::CenteredTransformInitializer<TransformType, FixedImageType, MovingImageType >  TransformInitializerType;
 

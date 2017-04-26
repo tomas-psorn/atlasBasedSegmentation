@@ -22,8 +22,8 @@ itk sw guide p. 454
 
 const     unsigned int    Dimension = 3;
 
-typedef   signed short  InputPixelType;
-typedef   signed short  OutputPixelType;
+typedef   unsigned short  InputPixelType;
+typedef   unsigned short  OutputPixelType;
 typedef   float         InternalPixelType;
 
 typedef itk::Image< InputPixelType,    Dimension >   InputImageType;
