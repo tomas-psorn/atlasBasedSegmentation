@@ -27,20 +27,29 @@ int main( int argc, char *argv[] )
 
 
     ImageReaderType::Pointer  fixedImageReader  = ImageReaderType::New();
-    MaskReaderType::Pointer fixedMaskReader = MaskReaderType::New();
+    ImageReaderType::Pointer fixedMaskReader = ImageReaderType::New();
     ImageReaderType::Pointer  movingImageReader  = ImageReaderType::New();
-    MaskReaderType::Pointer movingMaskReader = MaskReaderType::New();
+    ImageReaderType::Pointer movingMaskReader = ImageReaderType::New();
 
     fixedImageReader->SetFileName(  argv[1] );
     fixedMaskReader->SetFileName(  argv[2] );
     movingImageReader->SetFileName(  argv[3] );
     movingMaskReader->SetFileName( argv[4] );
 
+    UnsignedShortToChar::Pointer fixedMaskCaster = UnsignedShortToChar::New();
+    UnsignedShortToChar::Pointer movingMaskCaster = UnsignedShortToChar::New();
+
+    fixedMaskCaster->SetInput( fixedMaskReader->GetOutput() );
+    movingMaskCaster->SetInput( movingMaskReader->GetOutput() );
+
+    fixedMaskCaster->Update();
+    movingMaskCaster->Update();
+
     MaskType::Pointer fixedMask = MaskType::New();
     MaskType::Pointer movingMask = MaskType::New();
 
-    fixedMask->SetImage( fixedMaskReader->GetOutput() );
-    movingMask->SetImage( movingMaskReader->GetOutput() );
+    fixedMask->SetImage( fixedImageReader->GetOutput() );
+    movingMask->SetImage( movingMaskCaster->GetOutput() );
 
     metric->SetFixedImageMask(fixedMask);
 //    metric->SetMovingImageMask(movingMask);

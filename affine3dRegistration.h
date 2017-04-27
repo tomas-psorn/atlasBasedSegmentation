@@ -20,9 +20,12 @@ itk sw guide p. 516
 
 #include "itkImageMaskSpatialObject.h"
 
-const    unsigned int    Dimension = 3;
+#include "itkCastImageFilter.h"
+
+const    unsigned int Dimension = 3;
 typedef  unsigned int           PixelType;
 typedef  unsigned char           MaskPixelType;
+
 
 typedef itk::ImageMaskSpatialObject< Dimension > MaskType;
 
@@ -54,5 +57,7 @@ typedef itk::Image< OutputPixelType, Dimension > OutputImageType;
 typedef itk::CastImageFilter<FixedImageType, OutputImageType > CastFilterType;
 
 typedef itk::ImageFileWriter< OutputImageType>  WriterType;
+
+typedef itk::CastImageFilter <FixedImageType , MaskType > UnsignedShortToChar;
 
 #endif //ATLASBASEDSEGMENTATION_AFFINE3DREGISTRATION_H

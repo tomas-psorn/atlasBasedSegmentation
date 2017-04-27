@@ -21,3 +21,7 @@ target_link_libraries(interpolateInterleaves ${ITK_LIBRARIES})
 include(${ITK_USE_FILE} affine3dRegistration.h)
 add_executable(affine3dRegistration affine3dRegistration.cpp)
 target_link_libraries(affine3dRegistration ${ITK_LIBRARIES})
+
+include(${ITK_USE_FILE})
+add_executable(scratch scratch.cpp)
+target_link_libraries(scratch ${ITK_LIBRARIES})
