@@ -12,110 +12,70 @@ int main( int argc, char *argv[] )
     {
         std::cerr << "Missing Parameters " << std::endl;
         std::cerr << "Usage: " << argv[0];
-        std::cerr << "   fixedImageFile  fixedImageMask " << std::endl;
-        std::cerr << "   movingImageFile  movingImageMask " << std::endl;
+        std::cerr << "   fixedImageFile " << std::endl;
+        std::cerr << "   movingImageFile " << std::endl;
         std::cerr << "   outputImagefile" << std::endl;
         std::cerr << "   [differenceBeforeRegistration] [differenceAfterRegistration] " << std::endl;
         std::cerr << "   [stepLength] [maxNumberOfIterations] "<< std::endl;
         return EXIT_FAILURE;
     }
 
+    ImageReaderType::Pointer fixedImageReader = ImageReaderType::New();
+    ImageReaderType::Pointer movingImageReader = ImageReaderType::New();
+
+    fixedImageReader -> SetFileName( argv[1] );
+    movingImageReader -> SetFileName( argv[2] );
+
+    InToIntraCasterType::Pointer inToIntraFixedCaster = InToIntraCasterType::New();
+    InToIntraCasterType::Pointer inToIntraMovingCaster = InToIntraCasterType::New();
+
+    inToIntraFixedCaster -> SetInput( fixedImageReader -> GetOutput() );
+    inToIntraMovingCaster -> SetInput( movingImageReader -> GetOutput() );
+
+
+    // metric will use default linear interpolation
     MetricType::Pointer         metric        = MetricType::New();
+    TransformType::Pointer      transform     = TransformType::New();
     OptimizerType::Pointer      optimizer     = OptimizerType::New();
-    InterpolatorType::Pointer   interpolator  = InterpolatorType::New();
     RegistrationType::Pointer   registration  = RegistrationType::New();
 
 
-    ImageReaderType::Pointer  fixedImageReader  = ImageReaderType::New();
-    ImageReaderType::Pointer fixedMaskReader = ImageReaderType::New();
-    ImageReaderType::Pointer  movingImageReader  = ImageReaderType::New();
-    ImageReaderType::Pointer movingMaskReader = ImageReaderType::New();
+    registration -> SetMetric( metric );
+    registration -> SetOptimizer( optimizer );
 
-    fixedImageReader->SetFileName(  argv[1] );
-    fixedMaskReader->SetFileName(  argv[2] );
-    movingImageReader->SetFileName(  argv[3] );
-    movingMaskReader->SetFileName( argv[4] );
-
-    UnsignedShortToChar::Pointer fixedMaskCaster = UnsignedShortToChar::New();
-    UnsignedShortToChar::Pointer movingMaskCaster = UnsignedShortToChar::New();
-
-    fixedMaskCaster->SetInput( fixedMaskReader->GetOutput() );
-    movingMaskCaster->SetInput( movingMaskReader->GetOutput() );
-
-    fixedMaskCaster->Update();
-    movingMaskCaster->Update();
-
-    MaskType::Pointer fixedMask = MaskType::New();
-    MaskType::Pointer movingMask = MaskType::New();
-
-    fixedMask->SetImage( fixedImageReader->GetOutput() );
-    movingMask->SetImage( movingMaskCaster->GetOutput() );
-
-    metric->SetFixedImageMask(fixedMask);
-//    metric->SetMovingImageMask(movingMask);
-
-    registration->SetMetric(        metric        );
-    registration->SetOptimizer(     optimizer     );
-    registration->SetInterpolator(  interpolator  );
-
-
-    TransformType::Pointer  transform = TransformType::New();
-    registration->SetTransform( transform );
-
-    registration->SetFixedImage(    fixedImageReader->GetOutput()    );
-    registration->SetMovingImage(   movingImageReader->GetOutput()   );
-    fixedImageReader->Update();
-
-    registration->SetFixedImageRegion(
-            fixedImageReader->GetOutput()->GetBufferedRegion() );
-
+    // initialization of centered transform
+    TransformType::Pointer initialTransform = TransformType::New();
     TransformInitializerType::Pointer initializer = TransformInitializerType::New();
-    initializer->SetTransform(   transform );
-    initializer->SetFixedImage(  fixedImageReader->GetOutput() );
-    initializer->SetMovingImage( movingImageReader->GetOutput() );
+
+    initializer -> SetTransform( initialTransform );
+    initializer -> SetFixedImage( inToIntraFixedCaster -> GetOutput() );
+
+    initializer -> SetMovingImage( inToIntraMovingCaster -> GetOutput() );
+
+    initializer -> MomentsOn();
+
+    initializer -> InitializeTransform();
+
+    VersorType rotation;
+    VectorType axis;
+
+    axis[0] = 0.0;
+    axis[1] = 0.0;
+    axis[2] = 1.0;
+    const double angle = 0.0;
+    rotation.Set(axis, angle);
+    initialTransform -> SetRotation( rotation );
+
+    registration -> SetInitialTransform( initialTransform );
 
 
-    registration->SetInitialTransformParameters(transform->GetParameters() );
-
-    double translationScale = 1.0 / 1000.0;
-    if( argc > 10 )
-    {
-        translationScale = atof( argv[10] );
-    }
-
-    OptimizerScalesType optimizerScales( transform->GetNumberOfParameters() );
-    optimizerScales[0] =  1.0;
-    optimizerScales[1] =  1.0;
-    optimizerScales[2] =  1.0;
-    optimizerScales[3] =  1.0;
-    optimizerScales[4] =  1.0;
-    optimizerScales[5] =  1.0;
-    optimizerScales[6] =  1.0;
-    optimizerScales[7] =  1.0;
-    optimizerScales[8] =  1.0;
-    optimizerScales[9]  =  translationScale;
-    optimizerScales[10] =  translationScale;
-    optimizerScales[11] =  translationScale;
-    optimizer->SetScales( optimizerScales );
-
-    double steplength = 0.1;
-    if( argc > 6 )
-    {
-        steplength = atof( argv[8] );
-    }
-    unsigned int maxNumberOfIterations = 300;
-    if( argc > 7 )
-    {
-        maxNumberOfIterations = atoi( argv[9] );
-    }
-
-    optimizer->SetMaximumStepLength( steplength );
+    optimizer->SetLearningRate( 4 );
     optimizer->SetMinimumStepLength( 0.0001 );
-    optimizer->SetNumberOfIterations( maxNumberOfIterations );
-    optimizer->MinimizeOn();
+    optimizer->SetRelaxationFactor( 0.5 );
+    optimizer->SetNumberOfIterations( 100 );
 
-    std::cout << "Got here " << std::endl;
-
+    registration -> SetFixedImage( inToIntraFixedCaster -> GetOutput() );
+    registration -> SetMovingImage( inToIntraMovingCaster -> GetOutput() );
 
     try
     {
@@ -131,91 +91,35 @@ int main( int argc, char *argv[] )
         return EXIT_FAILURE;
     }
 
-    OptimizerType::ParametersType finalParameters =
-            registration->GetLastTransformParameters();
+    std::cout << optimizer -> GetNumberOfIterations() << std::endl;
 
-    const unsigned int numberOfIterations = optimizer->GetCurrentIteration();
-    const double bestValue = optimizer->GetValue();
+    std::cout << registration -> GetTransform()->GetParameters() << std::endl;
 
-    std::cout << "Result = " << std::endl;
-    std::cout << " Iterations    = " << numberOfIterations << std::endl;
-    std::cout << " Metric value  = " << bestValue          << std::endl;
-
-    TransformType::Pointer finalTransform = TransformType::New();
-
-    finalTransform->SetParameters( finalParameters );
-    finalTransform->SetFixedParameters( transform->GetFixedParameters() );
+    CompositeTransformType::Pointer outputCompositeTransform = CompositeTransformType::New();
+    outputCompositeTransform->AddTransform( initialTransform );
+    outputCompositeTransform->AddTransform( registration->GetModifiableTransform() );
 
     ResampleFilterType::Pointer resampler = ResampleFilterType::New();
+    resampler->SetInput( inToIntraMovingCaster->GetOutput() );
 
-    resampler->SetTransform( finalTransform );
-    resampler->SetInput( movingImageReader->GetOutput() );
+    resampler->SetTransform( outputCompositeTransform );
 
-    FixedImageType::Pointer fixedImage = fixedImageReader->GetOutput();
-
-    resampler->SetSize(    fixedImage->GetLargestPossibleRegion().GetSize() );
+    IntraImageType::Pointer fixedImage = inToIntraFixedCaster -> GetOutput();
+    resampler->SetSize( fixedImage->GetLargestPossibleRegion().GetSize() );
     resampler->SetOutputOrigin(  fixedImage->GetOrigin() );
     resampler->SetOutputSpacing( fixedImage->GetSpacing() );
     resampler->SetOutputDirection( fixedImage->GetDirection() );
-    resampler->SetDefaultPixelValue( 100 );
+    resampler->SetDefaultPixelValue( 0 );
 
     WriterType::Pointer      writer =  WriterType::New();
-    CastFilterType::Pointer  caster =  CastFilterType::New();
 
+    writer -> SetFileName( argv[3] );
 
-    writer->SetFileName( argv[5] );
+    IntraToOutCasterType::Pointer intraToOutCaster = IntraToOutCasterType::New();
 
-
-    caster->SetInput( resampler->GetOutput() );
-    writer->SetInput( caster->GetOutput()   );
-    writer->Update();
-
-
-    typedef itk::SubtractImageFilter<
-            FixedImageType,
-            FixedImageType,
-            FixedImageType > DifferenceFilterType;
-
-    DifferenceFilterType::Pointer difference = DifferenceFilterType::New();
-
-    difference->SetInput1( fixedImageReader->GetOutput() );
-    difference->SetInput2( resampler->GetOutput() );
-
-    WriterType::Pointer writer2 = WriterType::New();
-
-    typedef itk::RescaleIntensityImageFilter<
-            FixedImageType,
-            OutputImageType >   RescalerType;
-
-    RescalerType::Pointer intensityRescaler = RescalerType::New();
-
-    intensityRescaler->SetInput( difference->GetOutput() );
-    intensityRescaler->SetOutputMinimum(   0 );
-    intensityRescaler->SetOutputMaximum( 255 );
-
-    writer2->SetInput( intensityRescaler->GetOutput() );
-    resampler->SetDefaultPixelValue( 1 );
-
-    // Compute the difference image between the
-    // fixed and resampled moving image.
-    if( argc > 7 )
-    {
-        writer2->SetFileName( argv[7] );
-        writer2->Update();
-    }
-
-
-    typedef itk::IdentityTransform< double, Dimension > IdentityTransformType;
-    IdentityTransformType::Pointer identity = IdentityTransformType::New();
-
-    // Compute the difference image between the
-    // fixed and moving image before registration.
-    if( argc > 6 )
-    {
-        resampler->SetTransform( identity );
-        writer2->SetFileName( argv[6] );
-        writer2->Update();
-    }
+    intraToOutCaster -> SetInput( resampler -> GetOutput() );
+    writer -> SetInput( intraToOutCaster -> GetOutput() );
+    writer -> Update();
 
     return EXIT_SUCCESS;
 }
