@@ -6,9 +6,9 @@ itk sw guide p. 516
 #ifndef ATLASBASEDSEGMENTATION_AFFINE3DREGISTRATION_H
 #define ATLASBASEDSEGMENTATION_AFFINE3DREGISTRATION_H
 
-#include "itkImageRegistrationMethod.h"
-#include "itkMeanSquaresImageToImageMetric.h"
-#include "itkRegularStepGradientDescentOptimizer.h"
+#include "itkImageRegistrationMethodv4.h"
+#include "itkMeanSquaresImageToImageMetricv4.h"
+#include "itkRegularStepGradientDescentOptimizerv4.h"
 #include "itkCenteredTransformInitializer.h"
 #include "itkAffineTransform.h"
 #include "itkImageFileReader.h"
@@ -34,12 +34,12 @@ typedef itk::Image< PixelType, Dimension >  MovingImageType;
 typedef itk::Image< MaskPixelType, Dimension >  MaskImageType;
 
 
-typedef itk::ScalableAffineTransform<double, Dimension> TransformType;
+typedef itk::AffineTransform<double, Dimension> TransformType;
 
-typedef itk::RegularStepGradientDescentOptimizer OptimizerType;
-typedef itk::MeanSquaresImageToImageMetric<FixedImageType, MovingImageType > MetricType;
+typedef itk::RegularStepGradientDescentOptimizerv4<double > OptimizerType;
+typedef itk::MeanSquaresImageToImageMetricv4<FixedImageType, MovingImageType > MetricType;
 typedef itk::LinearInterpolateImageFunction< MovingImageType,double>    InterpolatorType;
-typedef itk::ImageRegistrationMethod<FixedImageType, MovingImageType> RegistrationType;
+typedef itk::ImageRegistrationMethodv4<FixedImageType, MovingImageType> RegistrationType;
 
 typedef itk::ImageFileReader< FixedImageType  > ImageReaderType;
 typedef itk::ImageFileReader< MaskImageType  > MaskReaderType;

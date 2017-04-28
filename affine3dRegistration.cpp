@@ -62,10 +62,6 @@ int main( int argc, char *argv[] )
     TransformType::Pointer  transform = TransformType::New();
     registration->SetTransform( transform );
 
-
-
-
-
     registration->SetFixedImage(    fixedImageReader->GetOutput()    );
     registration->SetMovingImage(   movingImageReader->GetOutput()   );
     fixedImageReader->Update();
