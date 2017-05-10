@@ -35,9 +35,6 @@ typedef itk::IntensityWindowingImageFilter<InputImageType, InternalImageType >  
 
 typedef itk::RecursiveGaussianImageFilter<InternalImageType, InternalImageType > GaussianFilterType;
 
-typedef itk::GradientAnisotropicDiffusionImageFilter<InternalImageType, InternalImageType > AnisoFilterType;
-
-
 
 typedef itk::Image< OutputPixelType,   Dimension >   OutputImageType;
 

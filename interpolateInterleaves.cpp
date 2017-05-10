@@ -34,18 +34,16 @@ int main(int argc, char * argv[]){
 
     intensityWindowing->SetInput( reader->GetOutput() );
 
-    AnisoFilterType::Pointer anisoSmoother = AnisoFilterType::New();
+
 
     GaussianFilterType::Pointer smootherX = GaussianFilterType::New();
     GaussianFilterType::Pointer smootherY = GaussianFilterType::New();
 
-    anisoSmoother->SetInput( intensityWindowing->GetOutput() );
-    anisoSmoother->SetNumberOfIterations(5);
-    anisoSmoother->SetTimeStep(0.00485938);
-    anisoSmoother->SetConductanceParameter(0.5);
+
 
     smootherX->SetInput( intensityWindowing->GetOutput() );
     smootherY->SetInput( smootherX->GetOutput() );
+
 
     InputImageType::ConstPointer inputImage = reader->GetOutput();
 
@@ -101,8 +99,8 @@ int main(int argc, char * argv[]){
 
     resampler->SetSize( size );
 
-    resampler->SetInput( anisoSmoother->GetOutput() );
-//    resampler->SetInput( smootherY->GetOutput() );
+
+    resampler->SetInput( smootherY->GetOutput() );
     resampler->Update();
 
     WriterType::Pointer writer = WriterType::New();

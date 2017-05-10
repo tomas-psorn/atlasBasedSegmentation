@@ -26,3 +26,11 @@ target_link_libraries(affine3dRegistration ${ITK_LIBRARIES})
 include(${ITK_USE_FILE})
 add_executable(scratch scratch.cpp)
 target_link_libraries(scratch ${ITK_LIBRARIES})
+
+include(${ITK_USE_FILE} convertor.h)
+add_executable(convertor convertor.cpp)
+target_link_libraries(convertor ${ITK_LIBRARIES})
+
+include(${ITK_USE_FILE} applyMask.h)
+add_executable(applyMask applyMask.cpp)
+target_link_libraries(applyMask ${ITK_LIBRARIES})
