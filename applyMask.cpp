@@ -12,18 +12,24 @@ int main( int argc, char *argv[] )
     ImageWriterType::Pointer imageWriter = ImageWriterType::New();
     MaskFilterType::Pointer maskFilter = MaskFilterType::New();
 
-
     imageReader -> SetFileName(argv[1]);
     maskReader  -> SetFileName(argv[2]);
     imageWriter -> SetFileName(argv[3]);
 
-    maskFilter -> SetMaskImage( maskReader -> GetOutput() );
+    imageReader -> Update();
+    maskReader ->Update();
 
-    maskFilter -> SetInput( imageReader -> GetOutput() );
+    ImageType::Pointer image = imageReader -> GetOutput();
+    ImageType::Pointer mask = maskReader -> GetOutput();
+
+    // ad-hoc modification
+    mask -> SetOrigin( image -> GetOrigin());
+
+    maskFilter -> SetMaskImage( mask );
+
+    maskFilter -> SetInput( image );
 
     imageWriter -> SetInput( maskFilter -> GetOutput() );
-
-
 
     imageWriter -> Update();
 

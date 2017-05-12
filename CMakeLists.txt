@@ -34,3 +34,9 @@ target_link_libraries(convertor ${ITK_LIBRARIES})
 include(${ITK_USE_FILE} applyMask.h)
 add_executable(applyMask applyMask.cpp)
 target_link_libraries(applyMask ${ITK_LIBRARIES})
+
+include(${ITK_USE_FILE} transform.h)
+add_executable(transform transform.cpp)
+target_link_libraries(transform ${ITK_LIBRARIES})
+
+
