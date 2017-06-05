@@ -39,4 +39,6 @@ include(${ITK_USE_FILE} transform.h)
 add_executable(transform transform.cpp)
 target_link_libraries(transform ${ITK_LIBRARIES})
 
-
+include(${ITK_USE_FILE} deformableRegistration.h)
+add_executable(deformableRegistration deformableRegistration.cpp)
+target_link_libraries(deformableRegistration ${ITK_LIBRARIES})
