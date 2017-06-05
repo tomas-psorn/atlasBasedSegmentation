@@ -17,7 +17,7 @@ int main( int argc, char *argv[] )
     imageWriter -> SetFileName(argv[3]);
 
     imageReader -> Update();
-    maskReader ->Update();
+    maskReader -> Update();
 
     ImageType::Pointer image = imageReader -> GetOutput();
     ImageType::Pointer mask = maskReader -> GetOutput();
