@@ -132,18 +132,18 @@ int main(int argc, char *argv[]) {
 
     itk::fem::MaterialLinearElasticity::Pointer m;
     m = itk::fem::MaterialLinearElasticity::New();
-    m->SetGlobalNumber(0);
+    m -> SetGlobalNumber(0);
     // Young's modulus of the membrane
-    m->SetYoungsModulus(registrationFilter->GetElasticity());
-    m->SetCrossSectionalArea(1.0);  // Cross-sectional area
-    m->SetThickness(1.0);           // Thickness
-    m->SetMomentOfInertia(1.0);     // Moment of inertia
-    m->SetPoissonsRatio(0.);        // Poisson's ratio -- DONT CHOOSE 1.0!!
-    m->SetDensityHeatProduct(1.0);  // Density-Heat capacity product
+    m -> SetYoungsModulus(registrationFilter->GetElasticity());
+    m -> SetCrossSectionalArea(1.0);  // Cross-sectional area
+    m -> SetThickness(1.0);           // Thickness
+    m -> SetMomentOfInertia(1.0);     // Moment of inertia
+    m -> SetPoissonsRatio(0.);        // Poisson's ratio -- DONT CHOOSE 1.0!!
+    m -> SetDensityHeatProduct(1.0);  // Density-Heat capacity product
 
     // Create the element type
     ElementType::Pointer e1=ElementType::New();
-    e1->SetMaterial(m.GetPointer());
+    e1 -> SetMaterial(m.GetPointer());
     registrationFilter->SetElement(e1.GetPointer());
     registrationFilter->SetMaterial(m);
 
