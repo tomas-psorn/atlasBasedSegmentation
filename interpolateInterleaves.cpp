@@ -34,16 +34,11 @@ int main(int argc, char * argv[]){
 
     intensityWindowing->SetInput( reader->GetOutput() );
 
-
-
     GaussianFilterType::Pointer smootherX = GaussianFilterType::New();
     GaussianFilterType::Pointer smootherY = GaussianFilterType::New();
 
-
-
     smootherX->SetInput( intensityWindowing->GetOutput() );
     smootherY->SetInput( smootherX->GetOutput() );
-
 
     InputImageType::ConstPointer inputImage = reader->GetOutput();
 

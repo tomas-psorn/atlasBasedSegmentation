@@ -39,6 +39,34 @@ include(${ITK_USE_FILE} transform.h)
 add_executable(transform transform.cpp)
 target_link_libraries(transform ${ITK_LIBRARIES})
 
+include(${ITK_USE_FILE} subtract2d.h)
+add_executable(subtract2d subtract2d.cpp)
+target_link_libraries(subtract2d ${ITK_LIBRARIES})
+
+include(${ITK_USE_FILE} subtract3d.h)
+add_executable(subtract3d subtract3d.cpp)
+target_link_libraries(subtract3d ${ITK_LIBRARIES})
+
 include(${ITK_USE_FILE} deformableRegistration.h)
 add_executable(deformableRegistration deformableRegistration.cpp)
 target_link_libraries(deformableRegistration ${ITK_LIBRARIES})
+
+include(${ITK_USE_FILE})
+add_executable(deformableRegistration2 DeformableRegistration2.cpp)
+target_link_libraries(deformableRegistration2 ${ITK_LIBRARIES})
+
+include(${ITK_USE_FILE})
+add_executable(deformableRegistration3 DeformableRegistration3.cpp)
+target_link_libraries(deformableRegistration3 ${ITK_LIBRARIES})
+
+include(${ITK_USE_FILE})
+add_executable(deformableRegistration4 DeformableRegistration4.cpp)
+target_link_libraries(deformableRegistration4 ${ITK_LIBRARIES})
+
+include(${ITK_USE_FILE})
+add_executable(deformableRegistration5 DeformableRegistration5.cpp)
+target_link_libraries(deformableRegistration5 ${ITK_LIBRARIES})
+
+include(${ITK_USE_FILE})
+add_executable(testt test.cpp)
+target_link_libraries(testt ${ITK_LIBRARIES})
