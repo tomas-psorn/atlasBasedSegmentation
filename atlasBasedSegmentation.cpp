@@ -22,29 +22,34 @@ int main (int argc, char *argv[])
     IntToDoubleCasterType::Pointer intToDoubleCaster = IntToDoubleCasterType::New();
     DoubleToIntCasterType::Pointer doubleToIntCaster = DoubleToIntCasterType::New();
 
+
     reader->SetFileName(argv[1]);
-    reader->Update();
     intToDoubleCaster->SetInput(reader->GetOutput());
+    intToDoubleCaster->Update();
     DoubleImageType::Pointer fixedImage = intToDoubleCaster->GetOutput();
 
+    std::cout << "Fixed image LPR" << fixedImage -> GetLargestPossibleRegion().GetSize() << std::endl;
+    std::cout << "Fixed image spacing" << fixedImage -> GetSpacing() << std::endl;
+    std::cout << "Fixed image origin" << fixedImage -> GetOrigin() << std::endl;
+
     reader->SetFileName(argv[2]);
-    reader->Update();
     intToDoubleCaster->SetInput(reader->GetOutput());
+    intToDoubleCaster->Update();
     DoubleImageType::Pointer movingImage = intToDoubleCaster->GetOutput();
 
+    std::cout << "Moving image LPR" << movingImage -> GetLargestPossibleRegion().GetSize() << std::endl;
+    std::cout << "Moving image spacing" << movingImage -> GetSpacing() << std::endl;
+    std::cout << "Moving image origin" << movingImage -> GetOrigin() << std::endl;
+
+
+
+
+
+    return EXIT_SUCCESS;
+
+    //
+
     ResampleFilterType::Pointer resampler = ResampleFilterType::New();
-
-    TransformType::Pointer identityTransform = TransformType::New();
-
-    identityTransform -> SetIdentity();
-
-    resampler -> SetInput( movingImage );
-    resampler -> SetOutputOrigin( movingImage -> GetOrigin() );
-    resampler -> SetOutputDirection( movingImage -> GetDirection() );
-    resampler -> SetSize( fixedImage -> GetLargestPossibleRegion().GetSize() );
-    resampler -> SetTransform( identityTransform );
-
-
 
     RegistrationType::Pointer registration = RegistrationType::New();
     InterpolatorType::Pointer interpolation = InterpolatorType::New();
