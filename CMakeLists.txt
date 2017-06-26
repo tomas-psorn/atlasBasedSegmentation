@@ -47,6 +47,10 @@ include(${ITK_USE_FILE} subtract3d.h)
 add_executable(subtract3d subtract3d.cpp)
 target_link_libraries(subtract3d ${ITK_LIBRARIES})
 
+include(${ITK_USE_FILE} evalMaskOverlap.h)
+add_executable(evalMaskOverlap evalMaskOverlap.cpp)
+target_link_libraries(evalMaskOverlap ${ITK_LIBRARIES})
+
 include(${ITK_USE_FILE} deformableRegistration.h)
 add_executable(deformableRegistration deformableRegistration.cpp)
 target_link_libraries(deformableRegistration ${ITK_LIBRARIES})
