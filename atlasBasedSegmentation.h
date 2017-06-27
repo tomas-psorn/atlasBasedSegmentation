@@ -5,45 +5,62 @@
 #ifndef ATLASBASEDSEGMENTATION_ATLASBASEDSEGMENTATION_H
 #define ATLASBASEDSEGMENTATION_ATLASBASEDSEGMENTATION_H
 
-#include <itkSimilarity3DTransform.h>
-#include "itkImage.h"
 #include "itkImageRegistrationMethodv4.h"
-#include "itkImageRegistrationMethod.h"
 #include "itkMeanSquaresImageToImageMetricv4.h"
+#include "itkVersorRigid3DTransform.h"
 #include "itkRegularStepGradientDescentOptimizerv4.h"
 
+#include "itkCenteredTransformInitializer.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
-
 #include "itkResampleImageFilter.h"
 #include "itkCastImageFilter.h"
 #include "itkSubtractImageFilter.h"
 #include "itkRescaleIntensityImageFilter.h"
-#include "itkIdentityTransform.h"
+#include "itkExtractImageFilter.h"
+#include "itkCommand.h"
+#include "itkBinaryThresholdImageFilter.h"
+#include "itkBinaryImageToLabelMapFilter.h"
+#include "itkBinaryImageToShapeLabelMapFilter.h"
 
-#include "itkGradientAnisotropicDiffusionImageFilter.h"
+#include "itkSubtractImageFilter.h"
 
-const bool verbose = true;
+#include "itkCommand.h"
 
-const int dimension = 3;
 
-// read images for registration
+const unsigned int Dimension = 3;
 
-typedef unsigned short InputPixelType;
-typedef double DoublePixelType;
+typedef float   FloatPixelType;
+typedef unsigned short  IntPixelType;
 
-typedef itk::Image< InputPixelType, dimension> IntImageType;
-typedef itk::Image< DoublePixelType, dimension> DoubleImageType;
-typedef itk::ImageFileReader <IntImageType> ReaderType;
-typedef itk::ImageFileWriter <IntImageType> WriterType;
-typedef itk::CastImageFilter <IntImageType, DoubleImageType> IntToDoubleCasterType;
-typedef itk::CastImageFilter <DoubleImageType, IntImageType> DoubleToIntCasterType;
+typedef itk::Image< FloatPixelType , Dimension >  FloatImageType;
+typedef itk::Image< IntPixelType , Dimension >  IntImageType;
 
-typedef itk::ResampleImageFilter < DoubleImageType, DoubleImageType > ResampleFilterType;
-typedef itk::Similarity3DTransform < DoublePixelType > TransformType;
-typedef itk::BSplineInterpolateImageFunction< DoubleImageType ,double > InterpolatorType;
-typedef itk::MeanSquaresImageToImageMetricv4 < DoubleImageType, DoubleImageType > MetricType;
-typedef itk::RegularStepGradientDescentOptimizerv4 < DoublePixelType > OptimizerType;
-typedef itk::ImageRegistrationMethodv4 < DoubleImageType, DoubleImageType, TransformType > RegistrationType;
+
+typedef itk::CastImageFilter< IntImageType, FloatImageType > Int2FloatCasterType;
+typedef itk::CastImageFilter< FloatImageType, IntImageType > Float2IntCasterType;
+typedef itk::ImageFileReader< IntImageType > ReaderType;
+typedef itk::ImageFileWriter< IntImageType > WriterType;
+
+typedef itk::VersorRigid3DTransform < double > TransformType;
+typedef itk::RegularStepGradientDescentOptimizerv4< double > OptimizerType;
+typedef itk::MeanSquaresImageToImageMetricv4< FloatImageType, FloatImageType> MetricType;
+typedef itk::ImageRegistrationMethodv4< FloatImageType, FloatImageType, TransformType > RegistrationType;
+typedef itk::ResampleImageFilter <FloatImageType, FloatImageType> ResampleFilterType;
+typedef itk::CenteredTransformInitializer<TransformType, FloatImageType, FloatImageType >  TransformInitializerType;
+
+typedef TransformType::VersorType  VersorType;
+typedef VersorType::VectorType     VectorType;
+
+
+typedef itk::IdentityTransform< double, Dimension > IdentityTransformType;
+
+typedef itk::SubtractImageFilter <FloatImageType, FloatImageType, FloatImageType> SubtractFilterType;
+
+//typedef itk::BinaryImageToLabelMapFilter <IntImageType, IntImageType> ImageToLabelFilterType;
+typedef itk::BinaryThresholdImageFilter <IntImageType, IntImageType> BinaryThresholdFilterType;
+
+typedef itk::RescaleIntensityImageFilter< FloatImageType, IntImageType > RescalerType;
+
 
 #endif //ATLASBASEDSEGMENTATION_ATLASBASEDSEGMENTATION_H
