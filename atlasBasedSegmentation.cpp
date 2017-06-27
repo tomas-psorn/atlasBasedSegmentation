@@ -34,17 +34,14 @@ public:
 
 int main( int argc, char *argv[] )
 {
-    if( argc < 5 )
+    if( argc < 7 )
     {
         std::cerr << "Missing Parameters " << std::endl;
         std::cerr << "Usage: " << argv[0];
         std::cerr << " fixedImageFile  movingImageFile ";
-        std::cerr << " outputImagefile atlaslabesl  [differenceBeforeRegistration] ";
-        std::cerr << " [differenceAfterRegistration] ";
-        std::cerr << " [sliceBeforeRegistration] ";
-        std::cerr << " [sliceDifferenceBeforeRegistration] ";
-        std::cerr << " [sliceDifferenceAfterRegistration] ";
-        std::cerr << " [sliceAfterRegistration] " << std::endl;
+        std::cerr << " atlaslabesl  registrationResult ";
+        std::cerr << " segmentationResult ";
+        std::cerr << " differenceBefore differenceAfter " << std::endl;
         return EXIT_FAILURE;
     }
 
