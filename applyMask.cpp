@@ -29,6 +29,8 @@ int main( int argc, char *argv[] )
 
     maskFilter -> SetInput( image );
 
+    maskFilter -> SetCoordinateTolerance(1e3);
+    
     imageWriter -> SetInput( maskFilter -> GetOutput() );
 
     imageWriter -> Update();
