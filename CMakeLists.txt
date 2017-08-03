@@ -31,9 +31,9 @@ include(${ITK_USE_FILE} convertor.h)
 add_executable(convertor convertor.cpp)
 target_link_libraries(convertor ${ITK_LIBRARIES})
 
-include(${ITK_USE_FILE} applyMask.h)
-add_executable(applyMask applyMask.cpp)
-target_link_libraries(applyMask ${ITK_LIBRARIES})
+include(${ITK_USE_FILE})
+add_executable(applyMask3d applyMask3d.cpp)
+target_link_libraries(applyMask3d ${ITK_LIBRARIES})
 
 include(${ITK_USE_FILE} transform.h)
 add_executable(transform transform.cpp)
