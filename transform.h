@@ -13,8 +13,9 @@
 #include "itkSimilarity3DTransform.h"
 #include "itkResampleImageFilter.h"
 
-
 #include "itkCastImageFilter.h"
+
+#include "itkFlipImageFilter.h"
 
 const int Dimension = 3;
 typedef unsigned short ShortType;
@@ -34,6 +35,8 @@ typedef itk::CastImageFilter <DoubleImageType , ShortImageType > Double2shortCas
 typedef itk::ResampleImageFilter <DoubleImageType , DoubleImageType> ResampleImageFilterType;
 
 typedef itk::Similarity3DTransform <DoubleType > TransformType;
+
+typedef itk::FlipImageFilter <DoubleImageType> FlipFilterType;
 
 // Transform bricks
 typedef TransformType::VersorType VersorType;

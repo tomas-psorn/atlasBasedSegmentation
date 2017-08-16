@@ -1,8 +1,19 @@
 //
 // Created by psorn on 10.5.17.
 //
+#include "itkImage.h"
+#include "itkImageFileReader.h"
+#include "itkImageFileWriter.h"
+#include "itkMaskImageFilter.h"
 
-#include "applyMask.h"
+
+const int Dimension = 3;
+typedef unsigned short PixelType;
+
+typedef itk::Image <PixelType, Dimension > ImageType;
+typedef itk::ImageFileReader <ImageType> ImageReaderType;
+typedef itk::ImageFileWriter <ImageType> ImageWriterType;
+typedef itk::MaskImageFilter <ImageType, ImageType, ImageType> MaskFilterType;
 
 int main( int argc, char *argv[] )
 {
@@ -29,6 +40,8 @@ int main( int argc, char *argv[] )
 
     maskFilter -> SetInput( image );
 
+    maskFilter -> SetCoordinateTolerance(1e3);
+    
     imageWriter -> SetInput( maskFilter -> GetOutput() );
 
     imageWriter -> Update();
