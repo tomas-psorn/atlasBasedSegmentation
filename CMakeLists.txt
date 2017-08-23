@@ -7,10 +7,12 @@ set(CMAKE_CXX_STANDARD 11)
 
 find_package(ITK REQUIRED)
 
-include(${ITK_USE_FILE} atlasBasedSegmentation.h)
-add_executable(atlasBasedSegmentation atlasBasedSegmentation.cpp atlasBasedSegmentation.h)
-add_executable(splitter splitter.cpp)
+include(${ITK_USE_FILE})
+add_executable(atlasBasedSegmentation atlasBasedSegmentation.cpp)
 target_link_libraries(atlasBasedSegmentation ${ITK_LIBRARIES})
+
+include(${ITK_USE_FILE})
+add_executable(splitter splitter.cpp)
 target_link_libraries(splitter ${ITK_LIBRARIES})
 
 
@@ -26,10 +28,6 @@ target_link_libraries(affine3dRegistration ${ITK_LIBRARIES})
 include(${ITK_USE_FILE})
 add_executable(scratch scratch.cpp)
 target_link_libraries(scratch ${ITK_LIBRARIES})
-
-include(${ITK_USE_FILE} convertor.h)
-add_executable(convertor convertor.cpp)
-target_link_libraries(convertor ${ITK_LIBRARIES})
 
 include(${ITK_USE_FILE})
 add_executable(applyMask3d applyMask3d.cpp)
@@ -78,6 +76,10 @@ target_link_libraries(testt ${ITK_LIBRARIES})
 include(${ITK_USE_FILE})
 add_executable(flip3d flip3d.cpp)
 target_link_libraries(flip3d ${ITK_LIBRARIES})
+
+include(${ITK_USE_FILE})
+add_executable(convert3d convert3d.cpp)
+target_link_libraries(convert3d ${ITK_LIBRARIES})
 
 include(${ITK_USE_FILE})
 add_executable(convert4d convert4d.cpp)

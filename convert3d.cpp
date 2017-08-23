@@ -1,8 +1,14 @@
-//
-// Created by psorn on 10.5.17.
-//
+#include "itkImage.h"
+#include "itkImageFileReader.h"
+#include "itkImageFileWriter.h"
 
-#include "convertor.h"
+const int Dimension = 3;
+typedef unsigned short PixelType;
+
+typedef itk::Image <PixelType, Dimension > ImageType;
+typedef itk::ImageFileReader <ImageType> ImageReaderType;
+typedef itk::ImageFileWriter <ImageType> ImageWriterType;
+
 
 int main( int argc, char *argv[] )
 {
