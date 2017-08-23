@@ -38,7 +38,7 @@ int main( int argc, char *argv[] )
     {
         std::cerr << "Missing Parameters " << std::endl;
         std::cerr << "Usage: " << argv[0];
-        std::cerr << " fixedImageFile  movingImageFile ";
+        std::cerr << " atlasImageFile  movingImageFile ";
         std::cerr << " atlaslabesl  registrationResult ";
         std::cerr << " segmentationResult ";
         std::cerr << " differenceBefore differenceAfter " << std::endl;
@@ -51,8 +51,6 @@ int main( int argc, char *argv[] )
 
     registration->SetMetric(        metric        );
     registration->SetOptimizer(     optimizer     );
-
-    TransformType::Pointer  initialTransform = TransformType::New();
 
     ReaderType::Pointer  fixedImageReader  = ReaderType::New();
     ReaderType::Pointer movingImageReader = ReaderType::New();
@@ -69,6 +67,9 @@ int main( int argc, char *argv[] )
     registration->SetFixedImage(    fixedImageCaster->GetOutput()    );
     registration->SetMovingImage(   movingImageCaster ->GetOutput()   );
 
+    movingImageCaster -> GetOutput() -> SetOrigin( fixedImageCaster -> GetOutput() -> GetOrigin()  );
+
+    TransformType::Pointer  initialTransform = TransformType::New();
     TransformInitializerType::Pointer initializer = TransformInitializerType::New();
 
     initializer->SetTransform(   initialTransform );
@@ -84,9 +85,12 @@ int main( int argc, char *argv[] )
     axis[2] = 1.0;
     const double angle = 0;
     rotation.Set(  axis, angle  );
+
     initialTransform->SetRotation( rotation );
 
+
     registration->SetInitialTransform( initialTransform );
+
 
     typedef OptimizerType::ScalesType       OptimizerScalesType;
     OptimizerScalesType optimizerScales( initialTransform->GetNumberOfParameters() );
