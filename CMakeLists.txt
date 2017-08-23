@@ -78,3 +78,7 @@ target_link_libraries(testt ${ITK_LIBRARIES})
 include(${ITK_USE_FILE})
 add_executable(flip3d flip3d.cpp)
 target_link_libraries(flip3d ${ITK_LIBRARIES})
+
+include(${ITK_USE_FILE})
+add_executable(convert4d convert4d.cpp)
+target_link_libraries(convert4d ${ITK_LIBRARIES})
