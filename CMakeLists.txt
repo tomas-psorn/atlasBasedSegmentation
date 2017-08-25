@@ -33,10 +33,6 @@ include(${ITK_USE_FILE})
 add_executable(applyMask3d applyMask3d.cpp)
 target_link_libraries(applyMask3d ${ITK_LIBRARIES})
 
-include(${ITK_USE_FILE} transform.h)
-add_executable(transform transform.cpp)
-target_link_libraries(transform ${ITK_LIBRARIES})
-
 include(${ITK_USE_FILE} subtract2d.h)
 add_executable(subtract2d subtract2d.cpp)
 target_link_libraries(subtract2d ${ITK_LIBRARIES})
@@ -84,3 +80,7 @@ target_link_libraries(convert3d ${ITK_LIBRARIES})
 include(${ITK_USE_FILE})
 add_executable(convert4d convert4d.cpp)
 target_link_libraries(convert4d ${ITK_LIBRARIES})
+
+include(${ITK_USE_FILE})
+add_executable(affineTransform3d affineTransform3d.cpp)
+target_link_libraries(affineTransform3d ${ITK_LIBRARIES})
