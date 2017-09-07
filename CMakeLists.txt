@@ -82,5 +82,5 @@ add_executable(convert4d convert4d.cpp)
 target_link_libraries(convert4d ${ITK_LIBRARIES})
 
 include(${ITK_USE_FILE})
-add_executable(affineTransform3d affineTransform3d.cpp)
-target_link_libraries(affineTransform3d ${ITK_LIBRARIES})
+add_executable(similarity3DTransform similarity3DTransform.cpp)
+target_link_libraries(similarity3DTransform ${ITK_LIBRARIES})
